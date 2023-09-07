@@ -8,6 +8,15 @@ export class employee {
   @Prop({ required: true })
   email: string;
 
+  @Prop({ required: true })
+  password: string;
+
+  @Prop()
+  token: string;
+
+  @Prop()
+  verified: boolean;
+
   @Prop()
   profile: string;
 

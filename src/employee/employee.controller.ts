@@ -7,14 +7,17 @@ import {
   Body,
   Put,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { employee } from './schema/employee.schema';
 import { EmployeeService } from './employee.service';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('employee')
 export class EmployeeController {
   constructor(private employeeService: EmployeeService) {}
 
+  @UseGuards(AuthGuard)
   @Get()
   // async getEmployee(): Promise<employee[]> {}
   async getEmployee(@Res() res): Promise<employee[]> {

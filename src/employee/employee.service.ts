@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { employee } from './schema/employee.schema';
+import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import { createEmployeeDto } from 'src/book/dto/employee.dto';
 
@@ -23,7 +24,12 @@ export class EmployeeService {
   }
 
   async createEmployee(payload: createEmployeeDto): Promise<employee> {
-    const employee = new this.employeeModel(payload);
+    const hashedPassword = await bcrypt.hash(payload.password, 10);
+    const data = {
+      ...payload,
+      password: hashedPassword,
+    };
+    const employee = new this.employeeModel(data);
     return employee.save();
   }
 
