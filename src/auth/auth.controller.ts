@@ -1,18 +1,35 @@
-import { Controller, Request, Response, Post, Param } from '@nestjs/common';
+import {
+  Controller,
+  Request,
+  Response,
+  Post,
+  Param,
+  Body,
+  NotFoundException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { ApiTags } from '@nestjs/swagger';
+import { CreateAuthRequestDto } from './dto/auth.request.dto';
 
 @Controller('auth')
+@ApiTags('Authentication')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/login')
-  async login(@Request() req, @Response() res) {
-    const { email, password } = req.body;
-    const { token, data } = await this.authService.loginService(
-      email,
-      password,
-    );
-    return res.status(200).json({ message: 'Login Successfully', token, data });
+  async login(@Body() createDto: CreateAuthRequestDto, @Response() res) {
+    try {
+      const { email, password } = createDto;
+      const { token, data } = await this.authService.loginService(
+        email,
+        password,
+      );
+      return res
+        .status(200)
+        .json({ message: 'Login Successfully', token, data });
+    } catch (err) {
+      throw new NotFoundException(err);
+    }
   }
 
   @Post('/change-password')

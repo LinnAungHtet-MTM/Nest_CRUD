@@ -8,15 +8,21 @@ import {
   Put,
   Delete,
   UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
 import { employee } from './schema/employee.schema';
 import { EmployeeService } from './employee.service';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { EmployeeRequestDto } from './dto/employee.request.dto';
+import { EmployeeResponseDto } from './dto/employee.response.dto';
 
 @Controller('employee')
+@ApiTags('Employee')
 export class EmployeeController {
   constructor(private employeeService: EmployeeService) {}
 
+  @ApiBearerAuth('JWT-auth')
   @UseGuards(AuthGuard)
   @Get()
   // async getEmployee(): Promise<employee[]> {}
@@ -32,11 +38,18 @@ export class EmployeeController {
   }
 
   @Post()
-  async create(@Res() res, @Body() employee): Promise<employee> {
-    const data = await this.employeeService.createEmployee(employee);
-    return res
-      .status(200)
-      .json({ message: 'Employee Created Successfully', data });
+  async create(
+    @Res() res,
+    @Body() employee: EmployeeRequestDto,
+  ): Promise<EmployeeResponseDto> {
+    try {
+      const data = await this.employeeService.createEmployee(employee);
+      return res
+        .status(200)
+        .json({ message: 'Employee Created Successfully', data });
+    } catch (err) {
+      throw new NotFoundException(err);
+    }
   }
 
   @Put(':id')

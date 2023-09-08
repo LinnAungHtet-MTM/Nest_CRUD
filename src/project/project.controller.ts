@@ -9,8 +9,10 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('project')
+@ApiTags('Project')
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 

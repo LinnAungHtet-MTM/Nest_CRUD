@@ -1,10 +1,10 @@
-export class createEmployeeDto {
+export class EmployeeRequestDto {
   employeeName: string;
   email: string;
-  password: string;
-  profile: string;
   address: string;
-  Phone: number;
+  Phone: string;
   DOB: string;
   Position: string;
+  verified: boolean;
+  token: string;
 }
